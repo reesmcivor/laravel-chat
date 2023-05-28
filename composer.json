@@ -22,7 +22,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ReesMcIvor\\Chat\\ChatPackageServiceProvider"
+                "ChatPackageServiceProvider"
             ]
         }
     },
