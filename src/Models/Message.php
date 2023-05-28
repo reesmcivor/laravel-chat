@@ -4,10 +4,10 @@ namespace ReesMcIvor\Chat\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use ReesMcIvor\Chat\Database\Factories\ThreadFactory;
+use ReesMcIvor\Chat\Database\Factories\MessageFactory;
 use App\Models\User;
 
-class Thread extends Model
+class Message extends Model
 {
     use HasFactory;
 
@@ -16,7 +16,7 @@ class Thread extends Model
 
     protected static function newFactory()
     {
-        return ThreadFactory::new();
+        return MessageFactory::new();
     }
 
     public function user()
@@ -24,9 +24,9 @@ class Thread extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function messages()
+    public function thread()
     {
-        return $this->hasMany(Message::class);
+        return $this->belongsTo(Thread::class);
     }
 
 }
