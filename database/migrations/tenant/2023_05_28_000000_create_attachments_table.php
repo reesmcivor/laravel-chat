@@ -3,15 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use ReesMcIvor\Chat\Models\Message;
 
 return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('chat_threads', function (Blueprint $table) {
+        Schema::create('attachments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\User::class);
-            $table->string('subject');
+            $table->foreignIdFor(Message::class);
+            $table->string('filename');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -8,9 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('chat_messages', function (Blueprint $table) {
+        Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\User::class);
             $table->string('subject');
             $table->softDeletes();
             $table->timestamps();

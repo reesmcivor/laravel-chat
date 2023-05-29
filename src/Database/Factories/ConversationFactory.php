@@ -7,7 +7,7 @@ use ReesMcIvor\Chat\Models\Thread;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use ReesMcIvor\Forms\Models\DateAnswer;
 
-class ThreadFactory extends Factory
+class ConversationFactory extends Factory
 {
     protected $model = Thread::class;
 

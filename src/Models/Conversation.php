@@ -4,19 +4,19 @@ namespace ReesMcIvor\Chat\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use ReesMcIvor\Chat\Database\Factories\ThreadFactory;
+use ReesMcIvor\Chat\Database\Factories\ConversationFactory;
 use App\Models\User;
 
-class Thread extends Model
+class Conversation extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $table = "chat_threads";
+    protected $table = "conversations";
 
     protected static function newFactory()
     {
-        return ThreadFactory::new();
+        return ConversationFactory::new();
     }
 
     public function user()

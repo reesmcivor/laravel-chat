@@ -12,7 +12,7 @@ class Message extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $table = "chat_threads";
+    protected $table = "conversation_messages";
 
     protected static function newFactory()
     {
