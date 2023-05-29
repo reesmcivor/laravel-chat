@@ -12,7 +12,7 @@ class Message extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $table = "conversation_messages";
+    protected $table = "messages";
 
     protected static function newFactory()
     {
@@ -24,9 +24,9 @@ class Message extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function thread()
+    public function conversation()
     {
-        return $this->belongsTo(Thread::class);
+        return $this->belongsTo(Conversation::class);
     }
 
 }
