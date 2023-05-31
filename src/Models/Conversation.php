@@ -19,6 +19,11 @@ class Conversation extends Model
         return ConversationFactory::new();
     }
 
+    public function participants()
+    {
+        return $this->belongsToMany(User::class, 'participants');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
