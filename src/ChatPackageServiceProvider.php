@@ -20,7 +20,7 @@ class ChatPackageServiceProvider extends ServiceProvider
         }
 
         $this->loadRoutesFrom(__DIR__.'/routes/tenant.php');
-        $this->loadViewsFrom(__DIR__.'/resources/views', 'forms');
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'chat');
     }
 
     public function map()

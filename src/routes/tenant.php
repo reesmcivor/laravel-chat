@@ -4,8 +4,8 @@ use App\Http\Middleware\CheckSubscription;
 use App\Http\Middleware\OwnerOnly;
 use Illuminate\Support\Facades\Route;
 
-use ReesMcIvor\Chat\Http\Controllers\Api\ConversationController;
-use ReesMcIvor\Chat\Http\Controllers\Api\MessagesController;
+use ReesMcIvor\Chat\Http\Controllers\Api as ApiControllers;
+use ReesMcIvor\Chat\Http\Controllers as Controllers;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 Route::middleware([
@@ -16,9 +16,14 @@ Route::middleware([
 ])->group(function () {
 
     Route::prefix('api/chat')->group(function() {
-        Route::get('conversations', [ConversationController::class, 'list'])->name('conversations.list');
-        Route::get('conversations/view/{conversation}', [ConversationController::class, 'view'])->name('conversations.show');
-        Route::post('conversations/create', [ConversationController::class, 'create'])->name('conversations.create');
-        Route::post('conversations/{conversation}/messages/create', [MessagesController::class, 'create'])->name('messages.create');
+        Route::get('conversations', [ApiControllers\ConversationController::class, 'list'])->name('conversations.list');
+        Route::get('conversations/view/{conversation}', [ApiControllers\ConversationController::class, 'view'])->name('conversations.show');
+        Route::post('conversations/create', [ApiControllers\ConversationController::class, 'create'])->name('conversations.create');
+        Route::post('conversations/{conversation}/messages/create', [ApiControllers\MessagesController::class, 'create'])->name('messages.create');
     });
+});
+
+Route::middleware('tenant', PreventAccessFromCentralDomains::class)->name('tenant.')->group(function () {
+   Route::resource('conversations', Controllers\ConversationController::class);
+   Route::post('messages/store/{conversation}', [Controllers\MessagesController::class, 'store'])->name('messages.store');
 });
