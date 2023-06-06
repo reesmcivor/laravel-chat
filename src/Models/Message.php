@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use ReesMcIvor\Chat\Database\Factories\MessageFactory;
 use App\Models\User;
+use ReesMcIvor\Chat\Events\NewChatMessage;
 
 class Message extends Model
 {
@@ -13,6 +14,18 @@ class Message extends Model
 
     protected $guarded = ['id'];
     protected $table = "messages";
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        $broadcast = function ($message) {
+            event(new NewChatMessage($message));
+        };
+
+        static::created($broadcast);
+        static::updated($broadcast);
+    }
 
     protected static function newFactory()
     {
