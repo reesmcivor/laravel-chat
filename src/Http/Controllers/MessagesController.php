@@ -18,7 +18,7 @@ class MessagesController extends Controller
             'content' => $request->get('content')
         ]);
 
-        return redirect()->route('conversations.show', $conversation)
+        return redirect(route('tenant.conversations.show', $conversation))
             ->with('Message sent successfully.');
     }
 }

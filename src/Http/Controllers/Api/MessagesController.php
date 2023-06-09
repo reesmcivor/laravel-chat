@@ -17,12 +17,6 @@ class MessagesController extends Controller
             'content' => $request->get('content')
         ]);
 
-        $user2 = User::factory()->create();
-        $message = $conversation->messages()->create([
-            'user_id' => $user2->id,
-            'content' => 'Hi...'
-        ]);
-
         return response()->json(['message' => 'Message created successfully.', 'data' => $message]);
     }
 }

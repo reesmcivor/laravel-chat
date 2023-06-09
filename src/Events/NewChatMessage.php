@@ -15,24 +15,18 @@ class NewChatMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public string $id = "1";
-    public int $userId = "1";
-    public string $content;
-    public int $sender;
-    public string $message;
+    public array $message;
 
     public function __construct( Message $message )
     {
-        $this->userId = 2;
-        $this->content = "Test message";
-        $this->message = "Another test message";
+        $this->message = $message->toArray();
+        $this->message['id'] = uniqid();
     }
 
     public function broadcastOn(): array
     {
         return [
-            new Channel("chat"),
-            new PrivateChannel('App.User.' . $this->userId),
+            new PrivateChannel('App.User.1'),
         ];
     }
 }

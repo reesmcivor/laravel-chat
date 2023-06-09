@@ -19,12 +19,12 @@ class Message extends Model
     {
         parent::boot();
 
-        $broadcast = function ($message) {
+        static::saving(function ($message) {
             event(new NewChatMessage($message));
-        };
-
-        static::created($broadcast);
-        static::updated($broadcast);
+        });
+        static::updated(function ($message) {
+            event(new NewChatMessage($message));
+        });
     }
 
     protected static function newFactory()
