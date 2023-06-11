@@ -19,6 +19,12 @@ class Conversation extends Model
         return ConversationFactory::new();
     }
 
+    public function close()
+    {
+        $this->update(['status' => 'closed']);
+    }
+
+
     public function participants()
     {
         return $this->belongsToMany(User::class, 'participants');
