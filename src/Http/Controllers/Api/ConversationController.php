@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use ReesMcIvor\Chat\Http\Requests\CreateConversationRequest;
 use ReesMcIvor\Chat\Http\Resources\ConversationResource;
 use ReesMcIvor\Chat\Models\Conversation;
 use ReesMcIvor\Chat\Models\Message;
 
 class ConversationController extends Controller
 {
+
     public function list(Request $request)
     {
         return ConversationResource::collection(
@@ -19,10 +21,12 @@ class ConversationController extends Controller
         );
     }
 
-    public function create(Request $request)
+    public function create(CreateConversationRequest $request)
     {
-        Conversation::create(['subject' => 'test'])->participants()->attach([$request->user()->id]);
-        return response()->json(['message' => 'Conversation created successfully.']);
+        $conversation = Conversation::create(['subject' => $request->subject ?? '']);
+        $conversation->participants()->attach([$request?->user()?->id]);
+
+        return ConversationResource::make($conversation);
     }
 
     public function view(Request $request, Conversation $conversation)

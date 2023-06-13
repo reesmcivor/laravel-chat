@@ -10,7 +10,7 @@ use App\Models\User;
 class ChatConversationTest extends TenantTestCase {
 
     #[Test]
-    public function a_conversation_can_be_created()
+    public function conversations_can_be_listed()
     {
         $user = User::factory()->create();
         $user2 = User::factory()->create();
@@ -32,5 +32,21 @@ class ChatConversationTest extends TenantTestCase {
                 ]
             ]]);
     }
+
+    #[Test]
+    public function a_conversation_can_be_created()
+    {
+        $user = User::factory()->create();
+        $user2 = User::factory()->create();
+        $this->actingAs($user);
+        $this->postJson('/api/chat/conversations', [
+            'subject' => 'Sports Injury',
+            'participants' => [$user2->id]
+        ])->assertSuccessful();
+        $this->assertDatabaseHas('chat_conversations', [
+            'subject' => 'Sports Injury'
+        ]);
+    }
+
 
 }

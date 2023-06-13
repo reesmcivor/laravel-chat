@@ -30,4 +30,10 @@ class ConversationController extends Controller
             'conversation' => $conversation
         ]);
     }
+
+    public function destroy(Request $request, Conversation $conversation)
+    {
+        $conversation->delete();
+        return response()->json(['message' => 'Conversation deleted successfully.']);
+    }
 }

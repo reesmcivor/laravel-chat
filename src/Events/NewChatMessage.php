@@ -19,8 +19,9 @@ class NewChatMessage implements ShouldBroadcast
 
     public function __construct( Message $message )
     {
-        $this->message = $message->toArray();
-        $this->message['id'] = uniqid();
+        $this->message['id'] = $message->id;
+        $this->message = [...$this->message, ...$message->toArray()];
+
     }
 
     public function broadcastOn(): array

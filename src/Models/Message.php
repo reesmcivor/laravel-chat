@@ -19,7 +19,10 @@ class Message extends Model
     {
         parent::boot();
 
-        static::saving(function ($message) {
+        static::saved(function ($message) {
+            event(new NewChatMessage($message));
+        });
+        static::deleted(function ($message) {
             event(new NewChatMessage($message));
         });
         static::updated(function ($message) {
