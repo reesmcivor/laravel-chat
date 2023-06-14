@@ -14,7 +14,7 @@ class ConversationController extends Controller
     public function index(Request $request)
     {
         return view('chat::conversations.index', [
-            'conversations' => Conversation::paginate()
+            'conversations' => Conversation::orderBy('updated_at', 'ASC')->paginate()
         ]);
     }
 

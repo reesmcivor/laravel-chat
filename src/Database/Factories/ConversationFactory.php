@@ -14,6 +14,7 @@ class ConversationFactory extends Factory
     {
         return [
             'subject' => $this->faker->sentence,
+            'updated_at' => $this->faker->dateTime,
         ];
     }
 }
