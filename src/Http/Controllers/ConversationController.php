@@ -18,6 +18,12 @@ class ConversationController extends Controller
         ]);
     }
 
+    public function join(Request $request, Conversation $conversation)
+    {
+        $conversation->participants()->attach([$request->user()->id]);
+        return response()->json(['message' => 'Conversation joined successfully.']);
+    }
+
     public function create(Request $request)
     {
         Conversation::create(['subject' => 'test'])->participants()->attach([$request->user()->id]);

@@ -33,6 +33,11 @@
                                         <x-button type="submit">Edit</x-button>
                                     </a>
                                 </div>
+                                <div>
+                                    <a href="{{ route('tenant.conversations.join', $conversation->id) }}">
+                                        <x-button type="submit">Join</x-button>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

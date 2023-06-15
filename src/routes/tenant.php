@@ -25,5 +25,6 @@ Route::middleware([
 
 Route::middleware('tenant', PreventAccessFromCentralDomains::class, 'auth')->name('tenant.')->group(function () {
     Route::resource('conversations', Controllers\ConversationController::class);
+    Route::get('conversations/{conversation}/join', [Controllers\ConversationController::class, 'join'])->name('conversations.join');
     Route::post('messages/store/{conversation}', [Controllers\MessagesController::class, 'store'])->name('messages.store');
 });
