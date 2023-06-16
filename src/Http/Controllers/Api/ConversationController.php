@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use ReesMcIvor\Chat\Http\Requests\CreateConversationRequest;
 use ReesMcIvor\Chat\Http\Resources\ConversationResource;
+use ReesMcIvor\Chat\Http\Requests\CloseConversationRequest;
 use ReesMcIvor\Chat\Models\Conversation;
 use ReesMcIvor\Chat\Models\Message;
 
@@ -17,7 +18,7 @@ class ConversationController extends Controller
     public function list(Request $request)
     {
         return ConversationResource::collection(
-            Conversation::with(['participants', 'messages'])->get()
+            Conversation::with(['participants', 'messages'])->orderBy('updated_at', 'desc')->get()
         );
     }
 

@@ -28,7 +28,7 @@ class Conversation extends Model
     public function close()
     {
         $this->update(['status' => 'closed']);
-        event(new CloseConversation($message));
+        event(new CloseConversation($this));
     }
 
     public function participants()

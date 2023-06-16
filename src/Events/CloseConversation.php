@@ -9,7 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use ReesMcIvor\Chat\Models\Message;
+use ReesMcIvor\Chat\Models\Conversation;
 
 class CloseConversation implements ShouldBroadcast
 {
@@ -25,7 +25,7 @@ class CloseConversation implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel(sprintf('App.Chat.Conversation.%d', $this->conversationId)),
+            new PrivateChannel(sprintf('App.User.1', $this->conversationId)),
         ];
     }
 }
