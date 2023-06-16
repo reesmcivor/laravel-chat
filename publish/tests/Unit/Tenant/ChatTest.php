@@ -10,6 +10,16 @@ use App\Models\User;
 class ChatTest extends TenantTestCase {
 
     #[Test]
+    public function a_conversation_can_be_joined_by_a_user_with_roles()
+    {
+        $user = User::factory()->create();
+        $user->roles()->create(['name' => 'admin']);
+        $chat = Conversation::factory()->create([ 'subject' => 'Sports Injury' ]);
+        $chat->participants()->attach($user->id);
+        $this->assertEquals(1, Conversation::first()->participants->count());
+    }
+
+    #[Test]
     public function a_conversation_can_be_created()
     {
         $user = User::factory()->create();
