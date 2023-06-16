@@ -26,6 +26,15 @@ class ChatPackageServiceProvider extends ServiceProvider
     public function map()
     {
         $this->mapTenantRoutes();
+        $this->mapBroadcastRoutes();
+    }
+
+    protected function mapBroadcastRoutes()
+    {
+        Route::prefix('broadcasting')
+            ->middleware(['web', 'auth'])
+            ->namespace($this->namespace)
+            ->group(module_path('Chat', 'routes/broadcast.php'));
     }
 
     protected function mapTenantRoutes()

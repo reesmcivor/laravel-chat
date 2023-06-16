@@ -29,6 +29,12 @@ class ConversationController extends Controller
         return ConversationResource::make($conversation);
     }
 
+    public function close(CloseConversationRequest $request, Conversation $conversation)
+    {
+        $conversation->close();
+        return response()->json(['message' => 'Conversation closed successfully.']);
+    }
+
     public function view(Request $request, Conversation $conversation)
     {
         return Message

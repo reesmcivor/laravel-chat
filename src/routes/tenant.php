@@ -18,6 +18,7 @@ Route::middleware([
     Route::prefix('api/chat')->name('api.')->group(function() {
         Route::get('conversations', [ApiControllers\ConversationController::class, 'list'])->name('conversations.list');
         Route::get('conversations/view/{conversation}', [ApiControllers\ConversationController::class, 'view'])->name('conversations.show');
+        Route::get('conversations/close/{conversation}', [ApiControllers\ConversationController::class, 'close'])->name('conversations.close');
         Route::post('conversations/create', [ApiControllers\ConversationController::class, 'create'])->name('conversations.create');
         Route::post('conversations/{conversation}/messages/create', [ApiControllers\MessagesController::class, 'create'])->name('messages.create');
     });
