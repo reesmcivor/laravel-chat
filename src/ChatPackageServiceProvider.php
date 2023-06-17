@@ -3,6 +3,7 @@
 namespace ReesMcIvor\Chat;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Console\Scheduling\Schedule;
 
 class ChatPackageServiceProvider extends ServiceProvider
 {
@@ -11,6 +12,11 @@ class ChatPackageServiceProvider extends ServiceProvider
 
     public function boot()
     {
+
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+            $schedule->command('chat:conversation:auto_close')->everyMinute();
+        });
+
         if($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../database/migrations/tenant' => database_path('migrations/tenant'),
@@ -21,6 +27,10 @@ class ChatPackageServiceProvider extends ServiceProvider
 
         $this->loadRoutesFrom(__DIR__.'/routes/tenant.php');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'chat');
+
+        $this->commands([
+            \ReesMcIvor\Chat\Console\Commands\Conversations\AutoClose::class,
+        ]);
     }
 
     public function map()

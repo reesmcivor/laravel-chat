@@ -5,6 +5,7 @@ namespace ReesMcIvor\Chat\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Wildside\Userstamps\Userstamps;
 use ReesMcIvor\Chat\Database\Factories\ConversationFactory;
 use App\Models\User;
 use ReesMcIvor\Chat\Events\CloseConversation;
@@ -12,6 +13,7 @@ use ReesMcIvor\Chat\Events\CloseConversation;
 class Conversation extends Model
 {
     use HasFactory;
+    use Userstamps;
     use SoftDeletes;
 
     protected $guarded = ['id'];
@@ -29,6 +31,11 @@ class Conversation extends Model
     {
         $this->update(['status' => 'closed']);
         event(new CloseConversation($this));
+    }
+
+    public static function getAutoCloseAfterMinutes() : int
+    {
+        return 60;
     }
 
     public function participants()

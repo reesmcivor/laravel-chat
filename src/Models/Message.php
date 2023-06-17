@@ -4,13 +4,16 @@ namespace ReesMcIvor\Chat\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use ReesMcIvor\Chat\Database\Factories\MessageFactory;
 use App\Models\User;
 use ReesMcIvor\Chat\Events\NewChatMessage;
+use Wildside\Userstamps\Userstamps;
 
 class Message extends Model
 {
     use HasFactory;
+    use Userstamps;
 
     protected $guarded = ['id'];
     protected $table = "messages";
@@ -19,7 +22,8 @@ class Message extends Model
     {
         parent::boot();
 
-        static::saved(function ($message) {
+        static::created(function ($message) {
+            $message->conversation->touch();
             event(new NewChatMessage($message));
         });
         static::deleted(function ($message) {
@@ -39,8 +43,8 @@ class Message extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
-    
+
+
 
     public function conversation()
     {
