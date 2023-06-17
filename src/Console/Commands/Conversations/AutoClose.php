@@ -32,13 +32,27 @@ class AutoClose extends Command {
             $tenant->run(function () use ($tenant) {
                 Conversation::whereNot('status', 'closed')->get()->each(
                     function(Conversation $conversation) {
-                        if($conversation->updated_at->diffInMinutes(now()) > Conversation::getAutoCloseAfterMinutes()) {
-                            $conversation->messages()->create([
-                                'user_id' => 1,
-                                'content' => 'This conversation will be closed in 10 minutes due to inactivity.'
-                            ]);
-                        }
+                        if($conversation->updated_at->diffInMinutes(now()) > Conversation::getAutoCloseWarningAfterMinutes()) {
 
+                            // Get last conversation message
+                            $lastMessage = $conversation->messages()->orderBy('created_at', 'DESC')->first();
+                            if($lastMessage->content == "This conversation will be closed in 10 minutes due to inactivity.") {
+                                if($conversation->updated_at->diffInMinutes(now()) > Conversation::getAutoCloseAfterMinutes()) {
+                                    $conversation->messages()->create([
+                                        'user_id' => 1,
+                                        'content' => 'This conversation has been closed due to inactivity.'
+                                    ]);
+                                    $conversation->close();
+                                }
+                            } else {
+                                $conversation->messages()->create([
+                                    'user_id' => 1,
+                                    'content' => 'This conversation will be closed in 10 minutes due to inactivity.'
+                                ]);
+                            }
+
+
+                        }
                     }
                 );
             });

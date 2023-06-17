@@ -33,9 +33,14 @@ class Conversation extends Model
         event(new CloseConversation($this));
     }
 
-    public static function getAutoCloseAfterMinutes() : int
+    public static function getAutoCloseWarningAfterMinutes() : int
     {
         return 60;
+    }
+
+    public static function getAutoCloseAfterMinutes() : int
+    {
+        return 70;
     }
 
     public function participants()
