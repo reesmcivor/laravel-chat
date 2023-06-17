@@ -5,6 +5,7 @@ namespace Tests\Chat\Feature\Tenant\Http\Controllers\Api;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\Test;
+use ReesMcIvor\Chat\Events\NewChatMessage;
 use ReesMcIvor\Chat\Models\Conversation;
 use Tests\TenantTestCase;
 use App\Models\User;
@@ -87,6 +88,21 @@ class ChatConversationTest extends TenantTestCase
                     ]
                 ]
             ]);
+    }
+
+    #[Test]
+    public function a_conversations_updated_at_is_updated_when_a_message_is_added()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $conversation = Conversation::factory()->create();
+        $this->postJson(route('api.messages.create', $conversation->id), ['content' => 'This is a chat message' ]);
+
+        $this->assertDatabaseHas(Conversation::class, [
+            'id' => $conversation->id,
+            'updated_at' => now()->toDateTimeString()
+        ]);
     }
 
 }
