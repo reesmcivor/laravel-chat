@@ -30,17 +30,47 @@ class Conversation extends Model
     public function close()
     {
         $this->update(['status' => 'closed']);
+
+        $this->messages()->create([
+            'user_id' => 1,
+            'content' => 'This conversation has been closed.'
+        ]);
+
         event(new CloseConversation($this));
     }
 
-    public static function getAutoCloseWarningAfterMinutes() : int
+    public function getAutoCloseMins() : int
     {
-        return 60;
+        return config('chat.conversations.close.after_minutes');
     }
 
-    public static function getAutoCloseAfterMinutes() : int
+    public function getAutoCloseLeniency()
     {
-        return 70;
+        return config('chat.conversations.close.leniency');
+    }
+
+    public function isClosable()
+    {
+        return
+            $this->status != 'closed' &&
+            $this->updated_at->diffInMinutes(now()) >
+            $this->getAutoCloseMins();
+    }
+
+    public function isClosableAfterLeniency()
+    {
+        return
+            $this->status != 'closed' &&
+            $this->updated_at->diffInMinutes(now()) > $this->getAutoCloseLeniency() &&
+            $this->lastMessage->isAutoCloseWarning();
+    }
+
+    public function sendAuthCloseWarningMsg()
+    {
+        $this->messages()->create([
+            'user_id' => 1,
+            'content' => 'This conversation will be closed in 10 minutes due to inactivity.'
+        ]);
     }
 
     public function participants()
@@ -61,6 +91,11 @@ class Conversation extends Model
     public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function lastMessage()
+    {
+        return $this->hasOne(Message::class)->latest();
     }
 
 }

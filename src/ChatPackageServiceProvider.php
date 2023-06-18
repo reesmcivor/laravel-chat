@@ -27,6 +27,7 @@ class ChatPackageServiceProvider extends ServiceProvider
 
         $this->loadRoutesFrom(__DIR__.'/routes/tenant.php');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'chat');
+        $this->mergeConfigFrom(__DIR__.'/../config/chat.php', 'chat');
 
         $this->commands([
             \ReesMcIvor\Chat\Console\Commands\Conversations\AutoClose::class,

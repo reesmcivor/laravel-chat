@@ -39,12 +39,15 @@ class Message extends Model
         return MessageFactory::new();
     }
 
+    public function isAutoCloseWarning()
+    {
+        return $this->content == 'This conversation will be closed in 10 minutes due to inactivity.';
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
-
 
     public function conversation()
     {

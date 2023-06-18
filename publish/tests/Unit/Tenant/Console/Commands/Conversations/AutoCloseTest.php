@@ -22,25 +22,29 @@ class AutoCloseTest extends TenantTestCase
         $chat = Conversation::factory()->create([ 'subject' => 'Sports Injury' ]);
         $chat->participants()->attach($user->id);
 
-        $chat->messages()->create([
-            'user_id' => $user->id,
-            'content' => 'I have a sports injury'
-        ]);
-
+        $chat->messages()->create([ 'user_id' => $user->id, 'content' => 'I have a sports injury' ]);
         $chat->refresh();
 
-        $this->travelTo(now()->addMinutes(Conversation::getAutoCloseAfterMinutes() + 1));
+        $this->travelTo(now()->addMinutes($chat->getAutoCloseMins() + 1));
 
-        if($chat->updated_at->diffInMinutes(now()) > Conversation::getAutoCloseAfterMinutes()) {
-            $chat->messages()->create([
-                'user_id' => 1,
-                'content' => 'This conversation will be closed in 10 minutes due to inactivity.'
-            ]);
+        if($chat->isClosable()) {
+            $chat->sendAuthCloseWarningMsg();
+            $chat->refresh();
         }
 
         $this->assertDatabaseHas('messages', [
             'user_id' => 1,
             'content' => 'This conversation will be closed in 10 minutes due to inactivity.'
+        ]);
+
+        $this->travelTo(now()->addMinutes($chat->getAutoCloseLeniency() + 1));
+        if($chat->isClosableAfterLeniency()) {
+            $chat->close();
+        }
+
+        $this->assertDatabaseHas('messages', [
+            'user_id' => 1,
+            'content' => 'This conversation has been closed.'
         ]);
     }
 
