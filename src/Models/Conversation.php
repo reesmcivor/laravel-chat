@@ -75,7 +75,7 @@ class Conversation extends Model
 
     public function join( User $user )
     {
-        $this->participants()->attach($user);
+        $this->participants()->syncWithoutDetaching([$user->id]);
         $this->touch();
 
         $this->messages()->create([

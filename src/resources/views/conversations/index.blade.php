@@ -13,7 +13,11 @@
                                 <h3 class="text-xl font-semibold text-gray-900">
                                     {{ $conversation->subject ?? "Subject NA" }}
                                 </h3>
-                                <p>{{ $conversation->lastMessage->content }}</p>
+                                @if($conversation->lastMessage)
+                                    <p class="mt-3 text-base text-gray-500">
+                                        {{ $conversation->lastMessage->user->name }} - {{ $conversation->lastMessage->created_at->format('d/m/Y H:i') }}
+                                    </p>
+                                @endif
                             </a>
 
                             <div class="actions flex space-x-2">
