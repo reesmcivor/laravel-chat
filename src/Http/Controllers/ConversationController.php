@@ -20,7 +20,7 @@ class ConversationController extends Controller
 
     public function join(Request $request, Conversation $conversation)
     {
-        $conversation->participants()->attach([$request->user()->id]);
+        $conversation->join( $request->user() );
         return response()->json(['message' => 'Conversation joined successfully.']);
     }
 

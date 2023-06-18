@@ -13,6 +13,7 @@
                                 <h3 class="text-xl font-semibold text-gray-900">
                                     {{ $conversation->subject ?? "Subject NA" }}
                                 </h3>
+                                <p>{{ $conversation->lastMessage->content }}</p>
                             </a>
 
                             <div class="actions flex space-x-2">

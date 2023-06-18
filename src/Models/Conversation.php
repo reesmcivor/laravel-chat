@@ -73,6 +73,21 @@ class Conversation extends Model
         ]);
     }
 
+    public function join( User $user )
+    {
+        $this->participants()->attach($user);
+        $this->touch();
+
+        $this->messages()->create([
+            'user_id' => $user->id,
+            'content' => sprintf('%s has joined the conversation.', $user->name)
+        ]);
+
+        if($this->status == "pending") {
+            $this->update(['status' => 'open']);
+        }
+    }
+
     public function participants()
     {
         return $this->belongsToMany(User::class, 'participants');
