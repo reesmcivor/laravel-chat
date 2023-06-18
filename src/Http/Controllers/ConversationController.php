@@ -18,16 +18,17 @@ class ConversationController extends Controller
         ]);
     }
 
+    public function create(Request $request)
+    {
+        Conversation::create(['subject' => 'test'])->participants()->attach([$request->user()->id]);
+        return redirect(route('tenant.conversations.index'))
+            ->with('success', __('Conversation created successfully.'));
+    }
+
     public function join(Request $request, Conversation $conversation)
     {
         $conversation->join( $request->user() );
         return response()->json(['message' => 'Conversation joined successfully.']);
-    }
-
-    public function create(Request $request)
-    {
-        Conversation::create(['subject' => 'test'])->participants()->attach([$request->user()->id]);
-        return response()->json(['message' => 'Conversation created successfully.']);
     }
 
     public function show(Request $request, Conversation $conversation)

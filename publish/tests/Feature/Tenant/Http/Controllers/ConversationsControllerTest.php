@@ -30,6 +30,11 @@ class ConversationsControllerTest extends TenantTestCase {
 
         $conversation = Conversation::factory()->create(['subject' => 'Sports Injury']);
         $this->getJson(route('tenant.conversations.join', ['conversation' => $conversation->id]))->assertSuccessful();
+
+        $this->assertDatabaseHas('participants', [
+            'conversation_id' => $conversation->id,
+            'user_id' => $user->id
+        ]);
     }
 
 }

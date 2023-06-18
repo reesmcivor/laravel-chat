@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Chat\Unit\Tenant;
+namespace Tests\Chat\Feture\Tenant;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;

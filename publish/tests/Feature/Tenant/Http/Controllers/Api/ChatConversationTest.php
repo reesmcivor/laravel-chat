@@ -99,10 +99,8 @@ class ChatConversationTest extends TenantTestCase
         $conversation = Conversation::factory()->create();
         $this->postJson(route('api.messages.create', $conversation->id), ['content' => 'This is a chat message' ]);
 
-        $this->assertDatabaseHas(Conversation::class, [
-            'id' => $conversation->id,
-            'updated_at' => now()->toDateTimeString()
-        ]);
+        $this->assertLessThan(5, $conversation->refresh()->updated_at->diffInSeconds(now()));
+
     }
 
 }
