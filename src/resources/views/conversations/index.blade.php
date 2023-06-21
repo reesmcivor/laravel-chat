@@ -21,9 +21,19 @@
                                 @endif
                             </a>
 
-                            <div class="">
+                            <div>
                                 <span class="text-bold">{{ __('Status: ') }}</span>{{ $conversation->status }}
-                                
+                            </div>
+
+                            <div class="flex">
+
+                                @foreach($conversation->participants as $participant)
+                                    <div class="rounded-full border-2 flex p-3 relative -ml-5 w-12 h-12">
+                                        <img src="{{ tenant_asset("storage/users/" . $participant->image) }}"
+                                            style="width: 30px; height: 30px; " />
+                                    </div>
+                                @endforeach
+
                             </div>
 
                             <div class="actions flex space-x-2">
@@ -31,15 +41,10 @@
                                     <form method="POST" action="{{ route('tenant.conversations.destroy', $conversation->id) }}">
                                         @csrf
                                         @method('DELETE')
-                                        <x-button variant="secondary" type="submit">Delete</x-button>
+                                        <x-button variant="secondary" type="submit" onclick="return confirm('Are you sure?')">Delete</x-button>
                                     </form>
                                 </div>
 
-                                <div>
-                                    <a href="{{ route('tenant.conversations.edit', $conversation->id) }}">
-                                        <x-button type="submit">Edit</x-button>
-                                    </a>
-                                </div>
                                 @if($conversation?->paricipants?->contains(auth()->user()))
                                     <div>
                                         <a href="{{ route('tenant.conversations.join', $conversation->id) }}">

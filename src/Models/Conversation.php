@@ -88,6 +88,21 @@ class Conversation extends Model
         }
     }
 
+    public function leave( User $user )
+    {
+        $this->participants()->detach([$user->id]);
+        $this->touch();
+
+        $this->messages()->create([
+            'user_id' => $user->id,
+            'content' => sprintf('%s has left the conversation.', $user->name)
+        ]);
+
+        if($this->participants()->count() == 0) {
+            $this->close();
+        }
+    }
+
     public function participants()
     {
         return $this->belongsToMany(User::class, 'participants');

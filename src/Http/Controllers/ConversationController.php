@@ -31,6 +31,12 @@ class ConversationController extends Controller
         return response()->json(['message' => 'Conversation joined successfully.']);
     }
 
+    public function leave(Request $request, Conversation $conversation)
+    {
+        $conversation->leave( $request->user() );
+        return response()->json(['message' => 'Conversation left successfully.']);
+    }
+
     public function show(Request $request, Conversation $conversation)
     {
         return view('chat::conversations.view', [
@@ -41,6 +47,7 @@ class ConversationController extends Controller
     public function destroy(Request $request, Conversation $conversation)
     {
         $conversation->delete();
-        return response()->json(['message' => 'Conversation deleted successfully.']);
+        return redirect(route('tenant.conversations.index'))
+            ->with('success', __('Conversation deleted successfully.'));
     }
 }

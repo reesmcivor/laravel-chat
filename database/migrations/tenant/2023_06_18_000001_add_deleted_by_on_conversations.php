@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('conversations', function (Blueprint $table) {
-            DB::statement("ALTER TABLE conversations MODIFY COLUMN status ENUM('pending', 'open', 'hold', 'closed') DEFAULT 'pending'");
+            $table->unsignedBigInteger('deleted_by')->nullable();
         });
     }
 };
