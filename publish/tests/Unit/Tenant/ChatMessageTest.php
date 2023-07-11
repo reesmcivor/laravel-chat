@@ -2,6 +2,7 @@
 
 namespace Tests\Chat\Unit\Tenant;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\Test;
 use ReesMcIvor\Chat\Models\Conversation;
@@ -12,6 +13,8 @@ use ReesMcIvor\Chat\Events\NewChatMessage;
 
 class ChatMessageTest extends TenantTestCase
 {
+
+    use RefreshDatabase;
 
     #[Test]
     public function a_conversation_message_broadcasts_event()

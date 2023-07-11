@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests\Chat\Feature\Tenant\Http\Controllers\Api;
+namespace Tests\Chat\Feature\Tenant\Http\Controllers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Broadcast;
 use PHPUnit\Framework\Attributes\Test;
 use ReesMcIvor\Chat\Models\Conversation;
 use Tests\TenantTestCase;
@@ -35,6 +36,7 @@ class ConversationsControllerTest extends TenantTestCase {
             'conversation_id' => $conversation->id,
             'user_id' => $user->id
         ]);
+
     }
 
 }
