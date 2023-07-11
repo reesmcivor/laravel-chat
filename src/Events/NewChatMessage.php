@@ -9,25 +9,27 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 use ReesMcIvor\Chat\Models\Message;
+use ReesMcIvor\Chat\Models\Conversation;
 
 class NewChatMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    protected Conversation $conversation;
+
+    public array $user = [];
     public array $message;
 
     public function __construct( Message $message )
     {
-        $this->message['id'] = $message->id;
-        $this->message = [...$this->message, ...$message->toArray()];
-
+        $this->conversation = $message->conversation;
+        $this->message = $message::with('user')->get()->first()->toArray();
     }
 
     public function broadcastOn(): array
     {
-        return [
-            new PrivateChannel('App.User.1'),
-        ];
+        return $this->conversation->broadcastOn();
     }
 }

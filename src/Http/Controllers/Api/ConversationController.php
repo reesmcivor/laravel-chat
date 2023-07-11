@@ -18,7 +18,13 @@ class ConversationController extends Controller
     public function list(Request $request)
     {
         return ConversationResource::collection(
-            Conversation::with(['participants', 'messages'])->orderBy('updated_at', 'desc')->get()
+            Conversation
+                ::with(['participants', 'messages'])
+                ->whereHas('participants', function ($query) {
+                    $query->where('user_id', Auth::user()->id);
+                })
+                ->orderBy('updated_at', 'desc')
+                ->get()
         );
     }
 
