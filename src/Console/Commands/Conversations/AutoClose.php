@@ -18,7 +18,7 @@ class AutoClose extends Command {
     protected $name = 'chat:conversations:auto_close';
     protected $description = 'Auto closing conversations';
 
-    use TenantAwareCommand;
+    /* use TenantAwareCommand; */
 
     public function getTenants()
     {
