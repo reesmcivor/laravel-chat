@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('conversation_id')->constrained();
             $table->foreignId('user_id')->constrained('users');
             $table->text('content');
-            $table->foreignId('attachment_id')->nullable()->constrained('attachments');
+            $table->foreignId('attachment_id')->nullable()->constrained('conversation_attachments');
             $table->softDeletes();
             $table->timestamps();
         });

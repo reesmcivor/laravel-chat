@@ -1,10 +1,13 @@
-@extends('layouts.tenant', ['title' => 'Conversations'])
-
-@section('content')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Calendar for ' . isset($therapist) ?? ' All ') }}
+        </h2>
+    </x-slot>
 
     <div class="">
         <div class="max-w-7xl mx-auto">
-            <x-button class="px-5" as="a" href="{{ route('tenant.conversations.create') }}">New conversation</x-button>
+            <a class="px-5" as="a" href="{{ route('tenant.conversations.create') }}">New conversation</a>
 
                 @foreach($conversations as $conversation)
                     <div class="block mt-8 rounded-lg shadow overflow-hidden">
@@ -29,7 +32,7 @@
 
                                 @foreach($conversation->participants as $participant)
                                     <div class="rounded-full border-2 flex p-3 relative -ml-5 w-12 h-12">
-                                        <img src="{{ tenant_asset("storage/users/" . $participant->image) }}"
+                                        <img src="{{ $participant->getPhoto() }}"
                                             style="width: 30px; height: 30px; " />
                                     </div>
                                 @endforeach
@@ -41,20 +44,20 @@
                                     <form method="POST" action="{{ route('tenant.conversations.destroy', $conversation->id) }}">
                                         @csrf
                                         @method('DELETE')
-                                        <x-button variant="secondary" type="submit" onclick="return confirm('Are you sure?')">Delete</x-button>
+                                        <button variant="secondary" type="submit" onclick="return confirm('Are you sure?')">Delete</button>
                                     </form>
                                 </div>
 
                                 @if($conversation?->paricipants?->contains(auth()->user()))
                                     <div>
                                         <a href="{{ route('tenant.conversations.join', $conversation->id) }}">
-                                            <x-button type="submit">Join</x-button>
+                                            Join
                                         </a>
                                     </div>
                                 @else
                                     <div>
                                         <a href="{{ route('tenant.conversations.show', $conversation->id) }}">
-                                            <x-button type="submit">View</x-button>
+                                            View
                                         </a>
                                     </div>
                                 @endif
@@ -63,10 +66,4 @@
                     </div>
 
                 @endforeach
-
-                {{ $conversations->links() }}
-            </div>
-        </div>
-    </div>
-
-@endsection
+</x-app-layout>

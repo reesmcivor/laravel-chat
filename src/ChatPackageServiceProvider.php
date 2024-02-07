@@ -19,7 +19,7 @@ class ChatPackageServiceProvider extends ServiceProvider
 
         if($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../database/migrations/tenant' => database_path('migrations/tenant'),
+                __DIR__ . '/../database/migrations/tenant' => database_path('migrations'),
                 //__DIR__ . '/../database/factories' => database_path('factories'),
                 __DIR__ . '/../publish/tests' => base_path('tests/Chat'),
             ], 'reesmcivor-chat');
@@ -34,12 +34,6 @@ class ChatPackageServiceProvider extends ServiceProvider
         ]);
     }
 
-    public function map()
-    {
-        $this->mapTenantRoutes();
-        $this->mapBroadcastRoutes();
-    }
-
     protected function mapBroadcastRoutes()
     {
         Route::prefix('broadcasting')
@@ -48,12 +42,6 @@ class ChatPackageServiceProvider extends ServiceProvider
             ->group(module_path('Chat', 'routes/broadcast.php'));
     }
 
-    protected function mapTenantRoutes()
-    {
-        Route::middleware(['web', 'tenant'])
-            ->namespace($this->namespace)
-            ->group($this->modulePath('routes/tenant.php'));
-    }
 
     private function modulePath($path)
     {

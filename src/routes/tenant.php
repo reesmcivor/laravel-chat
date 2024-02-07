@@ -8,12 +8,7 @@ use ReesMcIvor\Chat\Http\Controllers\Api as ApiControllers;
 use ReesMcIvor\Chat\Http\Controllers as Controllers;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
-Route::middleware([
-    'api',
-    'auth:sanctum',
-    \Stancl\Tenancy\Middleware\InitializeTenancyByDomainOrSubdomain::class,
-    PreventAccessFromCentralDomains::class,
-])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('api/chat')->name('api.')->group(function() {
         Route::get('conversations', [ApiControllers\ConversationController::class, 'list'])->name('conversations.list');
@@ -24,7 +19,8 @@ Route::middleware([
     });
 });
 
-Route::middleware('tenant', PreventAccessFromCentralDomains::class, 'auth')->name('tenant.')->group(function () {
+$adminMiddleware = ['web', 'auth:sanctum'];
+Route::middleware($adminMiddleware)->name('tenant.')->group(function () {
     Route::resource('conversations', Controllers\ConversationController::class);
     Route::get('conversations/{conversation}/join', [Controllers\ConversationController::class, 'join'])->name('conversations.join');
     Route::get('conversations/{conversation}/leave', [Controllers\ConversationController::class, 'leave'])->name('conversations.leave');

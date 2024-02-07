@@ -1,6 +1,9 @@
-@extends('layouts.tenant', ['title' => 'Conversations'])
-
-@section('content')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Calendar for ' . isset($therapist) ?? ' All ') }}
+        </h2>
+    </x-slot>
 
     <div class="">
         <div class="max-w-7xl mx-auto">
@@ -26,4 +29,4 @@
         </div>
     </div>
 
-@endsection
+</x-app-layout>
