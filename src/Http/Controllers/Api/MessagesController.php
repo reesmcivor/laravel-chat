@@ -6,14 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use ReesMcIvor\Chat\Http\Requests\CreateMessageRequest;
 use ReesMcIvor\Chat\Http\Resources\MessageResource;
 use ReesMcIvor\Chat\Models\Conversation;
 
 class MessagesController extends Controller
 {
-    public function create(CreateMessageRequest $request, Conversation $conversation)
+    public function create($conversationId, CreateMessageRequest $request)
     {
+        //Log::debug($conversationId);
+
+        $conversation = Conversation::find($conversationId);
+
         $message = $conversation->messages()->create([
             'user_id' => $request->user()->id,
             'content' => $request->get('content')

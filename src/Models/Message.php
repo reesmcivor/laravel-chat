@@ -2,6 +2,9 @@
 
 namespace ReesMcIvor\Chat\Models;
 
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Database\Eloquent\BroadcastsEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -14,6 +17,7 @@ class Message extends Model
 {
     use HasFactory;
     use Userstamps;
+    use BroadcastsEvents;
 
     protected $guarded = ['id'];
     protected $table = "messages";
@@ -32,6 +36,13 @@ class Message extends Model
         static::updated(function ($message) {
             event(new NewChatMessage($message));
         });
+    }
+
+    public function broadcastOn(string $event) : array
+    {
+        return $this->conversation->participants->map(function($participant) {
+            return new PrivateChannel('chat.' . $participant->id);
+        })->toArray();
     }
 
     protected static function newFactory()

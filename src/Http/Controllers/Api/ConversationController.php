@@ -42,8 +42,10 @@ class ConversationController extends Controller
         return response()->json(['message' => 'Conversation closed successfully.']);
     }
 
-    public function view(Request $request, Conversation $conversation)
+    public function view(Request $request, $conversationId)
     {
+        $conversation = Conversation::find($conversationId);
+
         return Message
             ::with('user')
             ->where('conversation_id', $conversation->id)

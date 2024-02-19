@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 use ReesMcIvor\Chat\Models\Message;
 use ReesMcIvor\Chat\Models\Conversation;
 
-class NewChatMessage implements ShouldBroadcast
+class NewChatMessage
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -27,9 +27,5 @@ class NewChatMessage implements ShouldBroadcast
         $this->conversation = $message->conversation;
         $this->message = $message::with('user')->get()->first()->toArray();
     }
-
-    public function broadcastOn(): array
-    {
-        return $this->conversation->broadcastOn();
-    }
+    
 }
