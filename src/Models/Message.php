@@ -27,7 +27,7 @@ class Message extends Model implements ShouldBroadcast
     protected static function boot()
     {
         parent::boot();
-
+        
         static::created(function ($message) {
             $message->conversation->touch();
         });
@@ -53,15 +53,7 @@ class Message extends Model implements ShouldBroadcast
 
     public function broadcastWith() : array {
         return [
-            'model' => [
-                'id' => $this->id,
-                'content' => $this->content,
-                'user_id' => $this->user_id,
-                'conversation_id' => $this->conversation_id,
-                'created_at' => $this->created_at,
-                'updated_at' => $this->updated_at,
-                'user' => new MessageResource($this->user),
-            ]
+            'model' => MessageResource::make($this)->resolve()
         ];
     }
 

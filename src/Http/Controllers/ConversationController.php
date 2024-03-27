@@ -15,7 +15,7 @@ class ConversationController extends Controller
     public function index(Request $request)
     {
         return view('chat::conversations.index', [
-            'conversations' => Conversation::orderBy('updated_at', 'ASC')->paginate()
+            'conversations' => Conversation::orderBy('updated_at', 'DESC')->with('participants')->paginate()
         ]);
     }
 
@@ -29,7 +29,7 @@ class ConversationController extends Controller
     public function join(Request $request, Conversation $conversation)
     {
         $conversation->join( $request->user() );
-        return response()->json(['message' => 'Conversation joined successfully.']);
+        return redirect()->back()->with('success', __('Conversation joined successfully.'));
     }
 
     public function leave(Request $request, Conversation $conversation)
