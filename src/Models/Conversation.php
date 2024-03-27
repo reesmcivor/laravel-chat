@@ -141,6 +141,7 @@ class Conversation extends Model implements ShouldBroadcast
     public function broadcastOn() : array
     {
         Log::info('Broadcasting to conversation ' . $this->id);
+        Log::debug('Participants: ' . $this->participants()->pluck('user_id'));
         return $this->participants()->pluck('user_id')->each(function($userId) {
             return new PrivateChannel('App.Models.User.' . $userId);
         })->toArray();

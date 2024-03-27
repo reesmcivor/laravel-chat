@@ -13,7 +13,6 @@ class ConversationFactory extends Factory
     public function definition()
     {
         return [
-            'subject' => $this->faker->sentence,
             'updated_at' => $this->faker->dateTime,
         ];
     }

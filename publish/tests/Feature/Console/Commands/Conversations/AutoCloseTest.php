@@ -1,26 +1,32 @@
 <?php
 
-namespace Tests\Chat\Feture\Tenant;
+namespace Tests\Chat\Feture\Console\Commands\Conversations;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\Test;
 use ReesMcIvor\Chat\Models\Conversation;
 use Tests\TenantTestCase;
 use App\Models\User;
 use ReesMcIvor\Chat\Events\NewChatMessage;
+use Tests\TestCase;
 
-class AutoCloseTest extends TenantTestCase
+class AutoCloseTest extends TestCase
 {
 
     use RefreshDatabase;
 
-    #[Test]
+    /** @test */
     public function a_auto_message_for_stale_conversation_is_created()
     {
+
+        Event::fake();
+
         $user = User::factory()->create();
-        $chat = Conversation::factory()->create([ 'subject' => 'Sports Injury' ]);
+        $chat = Conversation::factory()->create(['subject' => 'test']);
+
         $chat->participants()->attach($user->id);
         $chat->messages()->create([ 'user_id' => $user->id, 'content' => 'I have a sports injury' ]);
         $chat->refresh();

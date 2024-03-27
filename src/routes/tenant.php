@@ -23,8 +23,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 $adminMiddleware = ['web', 'auth:sanctum'];
 Route::middleware($adminMiddleware)->name('tenant.')->group(function () {
     Route::resource('conversations', Controllers\ConversationController::class);
+
+    Route::get('conversations/{conversation}', \ReesMcIvor\Chat\Http\Livewire\ViewConversation::class)->name('conversations.view');
+
     Route::get('conversations/{conversation}/join', [Controllers\ConversationController::class, 'join'])->name('conversations.join');
     Route::get('conversations/{conversation}/leave', [Controllers\ConversationController::class, 'leave'])->name('conversations.leave');
+    Route::post('conversations/{conversation}/close', [Controllers\ConversationController::class, 'close'])->name('conversations.close');
     Route::post('messages/store/{conversation}', [Controllers\MessagesController::class, 'store'])->name('messages.store');
     Route::delete('messages/destroy/{message}', [Controllers\MessagesController::class, 'destroy'])->name('messages.destroy');
     Route::put('messages/update/{message}', [Controllers\MessagesController::class, 'update'])->name('messages.update');

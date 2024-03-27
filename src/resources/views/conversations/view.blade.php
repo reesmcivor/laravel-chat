@@ -64,37 +64,4 @@
 
         </div>
     </div>
-
-    <script>
-        import Echo from 'laravel-echo';
-
-        window.Pusher = require('pusher-js');
-
-        const options = {
-            broadcaster: 'pusher',
-            key: process.env.MIX_PUSHER_APP_KEY,
-            wsHost: process.env.MIX_PUSHER_HOST,
-            wsPort: process.env.MIX_PUSHER_PORT,
-            wssPort: process.env.MIX_PUSHER_PORT,
-            cluster: '',
-            forceTLS: true,
-            encrypted: true,
-            disableStats: false,
-            enabledTransports: ['wss', 'wss'],
-        }
-        console.log(options);
-
-        let laravelEcho = new Echo(options);
-
-        Pusher.logToConsole = true;
-
-        console.log(laravelEcho);
-        laravelEcho.private(`App.Models.User.1`)
-            .listen('.MessageCreated', (e) => {
-                console.log(e);
-            });
-
-
-        alert('got here');
-    </script>
 </x-app-layout>

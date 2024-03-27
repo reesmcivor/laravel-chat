@@ -29,7 +29,7 @@ class Message extends Model implements ShouldBroadcast
         parent::boot();
 
         static::created(function ($message) {
-            //$message->conversation->touch();
+            $message->conversation->touch();
         });
     }
 
@@ -50,12 +50,18 @@ class Message extends Model implements ShouldBroadcast
         return 'chat';
     }
 
+
     public function broadcastWith() : array {
-
-        //Log::debug('MESSAGE', $this->toArray());
-
         return [
-            'model' => MessageResource::make($this)->resolve()
+            'model' => [
+                'id' => $this->id,
+                'content' => $this->content,
+                'user_id' => $this->user_id,
+                'conversation_id' => $this->conversation_id,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
+                'user' => new MessageResource($this->user),
+            ]
         ];
     }
 

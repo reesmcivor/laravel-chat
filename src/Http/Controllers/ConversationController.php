@@ -38,6 +38,12 @@ class ConversationController extends Controller
         return response()->json(['message' => 'Conversation left successfully.']);
     }
 
+    public function close(Request $request, Conversation $conversation)
+    {
+        $conversation->close();
+        return redirect()->back()->with('success', __('Conversation closed successfully.'));
+    }
+
     public function show(Request $request, Conversation $conversation)
     {
         return view('chat::conversations.view', [
