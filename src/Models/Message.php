@@ -2,6 +2,7 @@
 
 namespace ReesMcIvor\Chat\Models;
 
+use App\Notifications\Premium\NewConversationNotification;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Database\Eloquent\BroadcastsEvents;
@@ -30,6 +31,13 @@ class Message extends Model implements ShouldBroadcast
         
         static::created(function ($message) {
             $message->conversation->touch();
+
+            if($message->conversation->messages()->count() == 1) {
+                User::whereIn('email',['hello@logicrises.co.uk','oli@optimal-movement.co.uk'])
+                    ->get()->each(function ($admin) use ($message) {
+                    $admin->notify(new NewConversationNotification($message));
+                });
+            }
         });
     }
 
