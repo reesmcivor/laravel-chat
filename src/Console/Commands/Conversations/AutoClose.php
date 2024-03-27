@@ -27,17 +27,12 @@ class AutoClose extends Command {
 
     public function run(InputInterface $input, OutputInterface $output): int
     {
-
-        Tenant::all()->each(function($tenant) {
-            $tenant->run(function () use ($tenant) {
-                Conversation::whereNot('status', 'closed')->get()->each(function(Conversation $conversation) {
-                    if($conversation->isClosableAfterLeniency()) {
-                        $conversation->close();
-                    } elseif ($conversation->isClosable()) {
-                        $conversation->sendAuthCloseWarningMsg();
-                    }
-                });
-            });
+        Conversation::whereNot('status', 'closed')->get()->each(function(Conversation $conversation) {
+            if($conversation->isClosableAfterLeniency()) {
+                $conversation->close();
+            } elseif ($conversation->isClosable()) {
+                $conversation->sendAuthCloseWarningMsg();
+            }
         });
 
         return Command::SUCCESS;

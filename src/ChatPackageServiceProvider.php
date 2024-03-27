@@ -14,7 +14,7 @@ class ChatPackageServiceProvider extends ServiceProvider
     {
 
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
-            $schedule->command('chat:conversation:auto_close')->everyMinute();
+           // $schedule->command('chat:conversation:auto_close')->everyMinute();
         });
 
         if($this->app->runningInConsole()) {

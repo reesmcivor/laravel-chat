@@ -14,7 +14,7 @@
                         <div class="bg-white p-6 flex items-center justify-between">
                             <a href="{{ route('tenant.conversations.show', $conversation->id) }}">
                                 <h3 class="text-xl font-semibold text-gray-900">
-                                    {{ $conversation->subject ?? "Subject NA" }}
+                                    Conversation with {{ $conversation->creator->name }}
                                 </h3>
                                 <span class="text-xs">{{ $conversation->updated_at->format('d/m/Y H:i') }}</span>
                                 @if($conversation->lastMessage)
@@ -34,19 +34,13 @@
                                     <div class="rounded-full border-2 flex p-3 relative -ml-5 w-12 h-12">
                                         <img src="{{ $participant->getPhoto() }}"
                                             style="width: 30px; height: 30px; " />
+                                        {{ $participant->name }}
                                     </div>
                                 @endforeach
 
                             </div>
 
                             <div class="actions flex space-x-2">
-                                <div>
-                                    <form method="POST" action="{{ route('tenant.conversations.destroy', $conversation->id) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button variant="secondary" type="submit" onclick="return confirm('Are you sure?')">Delete</button>
-                                    </form>
-                                </div>
 
                                 @if($conversation?->paricipants?->contains(auth()->user()))
                                     <div>
@@ -56,11 +50,22 @@
                                     </div>
                                 @else
                                     <div>
-                                        <a href="{{ route('tenant.conversations.show', $conversation->id) }}">
-                                            View
+                                        <a href="{{ route('tenant.conversations.show', $conversation->id) }}" class="rounded-full border-2 flex p-3 relative">
+                                            <i class="fas fa-eye"></i>
                                         </a>
                                     </div>
                                 @endif
+
+                                    <div>
+                                        <form method="POST" action="{{ route('tenant.conversations.destroy', $conversation->id) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button variant="secondary" type="submit" onclick="return confirm('Are you sure?')" class="rounded-full border-2 flex p-3 relative">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                
                             </div>
                         </div>
                     </div>

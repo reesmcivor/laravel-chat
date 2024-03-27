@@ -2,19 +2,29 @@
 
 namespace ReesMcIvor\Chat\Models;
 
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Database\Eloquent\BroadcastsEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
+use ReesMcIvor\Chat\Http\Resources\ConversationResource;
+use ReesMcIvor\Chat\Http\Resources\MessageResource;
 use Wildside\Userstamps\Userstamps;
 use ReesMcIvor\Chat\Database\Factories\ConversationFactory;
 use App\Models\User;
 use ReesMcIvor\Chat\Events\CloseConversation;
 
-class Conversation extends Model
+class Conversation extends Model implements ShouldBroadcast
 {
     use HasFactory;
     use Userstamps;
     use SoftDeletes;
+
+    use BroadcastsEvents;
+
+    public $afterCommit = true;
 
     protected $guarded = ['id'];
     protected $table = "conversations";
@@ -120,12 +130,34 @@ class Conversation extends Model
 
     public function messages()
     {
-        return $this->hasMany(Message::class);
+        return $this->hasMany(Message::class)->orderBy('created_at', 'DESC');
     }
 
     public function lastMessage()
     {
         return $this->hasOne(Message::class)->latest();
+    }
+
+    public function broadcastOn() : array
+    {
+        Log::info('Broadcasting to conversation ' . $this->id);
+        return $this->participants()->pluck('user_id')->each(function($userId) {
+            return new PrivateChannel('App.Models.User.' . $userId);
+        })->toArray();
+    }
+
+    public function broadcastQueue() : string
+    {
+        return 'chat';
+    }
+
+    public function broadcastWith() : array {
+        return [
+            'model' => [
+                'id' => $this->id,
+                'participants' => $this->participants()->get(),
+            ]
+        ];
     }
 
 }

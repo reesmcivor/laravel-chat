@@ -12,7 +12,10 @@ class MessageResource extends JsonResource
         return [
             'id' => $this->id,
             'content' => $this->content,
-            'user' => $this->user
+            'user' => UserResource::make($this->user),
+            'owner' => $this->owner,
+            'creator' => UserResource::make($this->creator),
+            'created_at' => $this?->created_at?->timestamp ?? now()->timestamp,
         ];
     }
 }

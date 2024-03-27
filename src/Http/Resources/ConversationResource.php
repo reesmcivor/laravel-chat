@@ -12,11 +12,11 @@ class ConversationResource extends JsonResource
         return [
             'id' => $this->id,
             'subject' => $this->subject,
-            'participants' => $this->whenLoaded('participants'),
-            'messages' => $this->whenLoaded('messages'),
+            'participants' => UserResource::collection($this->participants),
+            'messages' => MessageResource::collection($this->messages),
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at->timestamp,
+            'updated_at' => $this->updated_at->timestamp,
         ];
     }
 }

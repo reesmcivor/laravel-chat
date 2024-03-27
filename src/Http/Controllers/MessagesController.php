@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use ReesMcIvor\Chat\Models\Conversation;
+use ReesMcIvor\Chat\Models\Message;
 
 class MessagesController extends Controller
 {
@@ -20,5 +21,23 @@ class MessagesController extends Controller
 
         return redirect(route('tenant.conversations.show', $conversation))
             ->with('Message sent successfully.');
+    }
+
+    public function update(Request $request, Message $message)
+    {
+        $message->update([
+            'content' => $request->get('content')
+        ]);
+
+        return redirect()->back()
+            ->with('Message updated successfully.');
+    }
+
+    public function destroy( Message $message )
+    {
+        $message->delete();
+
+        return redirect()->back()
+            ->with('Message deleted successfully.');
     }
 }

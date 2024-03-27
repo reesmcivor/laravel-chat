@@ -11,13 +11,15 @@ use Illuminate\Support\Facades\Log;
 use ReesMcIvor\Chat\Database\Factories\MessageFactory;
 use App\Models\User;
 use ReesMcIvor\Chat\Events\NewChatMessage;
+use ReesMcIvor\Chat\Http\Resources\MessageResource;
 use Wildside\Userstamps\Userstamps;
-
-class Message extends Model
+class Message extends Model implements ShouldBroadcast
 {
     use HasFactory;
     use Userstamps;
     use BroadcastsEvents;
+
+    public $afterCommit = true;
 
     protected $guarded = ['id'];
     protected $table = "messages";
@@ -27,22 +29,34 @@ class Message extends Model
         parent::boot();
 
         static::created(function ($message) {
-            $message->conversation->touch();
-            event(new NewChatMessage($message));
-        });
-        static::deleted(function ($message) {
-            event(new NewChatMessage($message));
-        });
-        static::updated(function ($message) {
-            event(new NewChatMessage($message));
+            //$message->conversation->touch();
         });
     }
 
-    public function broadcastOn(string $event) : array
+    public function broadcastOn() : array
     {
-        return $this->conversation->participants->map(function($participant) {
-            return new PrivateChannel('chat.' . $participant->id);
-        })->toArray();
+        $broadcastOn = [];
+        if($this?->conversation?->participants) {
+            $broadcastOn = $this?->conversation?->participants->map(function ($participant) {
+                return new PrivateChannel('App.Models.User.' . $participant->id);
+            })->toArray();
+        }
+
+        return $broadcastOn;
+    }
+
+    public function broadcastQueue() : string
+    {
+        return 'chat';
+    }
+
+    public function broadcastWith() : array {
+
+        //Log::debug('MESSAGE', $this->toArray());
+
+        return [
+            'model' => MessageResource::make($this)->resolve()
+        ];
     }
 
     protected static function newFactory()

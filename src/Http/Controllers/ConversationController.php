@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use ReesMcIvor\Chat\Http\Resources\ConversationResource;
 use ReesMcIvor\Chat\Models\Conversation;
 use ReesMcIvor\Chat\Models\Message;
 
@@ -20,7 +21,7 @@ class ConversationController extends Controller
 
     public function create(Request $request)
     {
-        Conversation::create(['subject' => 'test'])->participants()->attach([$request->user()->id]);
+        Conversation::create(['subject' => 'test'])->participants()->sync([$request->user()->id]);
         return redirect(route('tenant.conversations.index'))
             ->with('success', __('Conversation created successfully.'));
     }

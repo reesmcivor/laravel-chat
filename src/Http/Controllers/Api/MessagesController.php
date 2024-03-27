@@ -10,13 +10,12 @@ use Illuminate\Support\Facades\Log;
 use ReesMcIvor\Chat\Http\Requests\CreateMessageRequest;
 use ReesMcIvor\Chat\Http\Resources\MessageResource;
 use ReesMcIvor\Chat\Models\Conversation;
+use ReesMcIvor\ChatGPT\Services\ChatGPT;
 
 class MessagesController extends Controller
 {
     public function create($conversationId, CreateMessageRequest $request)
     {
-        //Log::debug($conversationId);
-
         $conversation = Conversation::find($conversationId);
 
         $message = $conversation->messages()->create([

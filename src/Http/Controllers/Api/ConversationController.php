@@ -15,11 +15,21 @@ use ReesMcIvor\Chat\Models\Message;
 class ConversationController extends Controller
 {
 
+    public function firstOrCreate(Request $request)
+    {
+        $conversation = Conversation::where('status', '!=', 'closed')
+            ->where('created_by', auth()->user()->id)
+            ->firstOrCreate([], ['subject' => '', 'status' => 'open']);
+
+        $conversation->participants()->sync([ auth()->user()->id ]);
+        return ConversationResource::make($conversation);
+    }
+
     public function list(Request $request)
     {
         return ConversationResource::collection(
             Conversation
-                ::with(['participants', 'messages'])
+                ::with(['participants', 'messages', 'messages.creator'])
                 ->whereHas('participants', function ($query) {
                     $query->where('user_id', Auth::user()->id);
                 })
@@ -31,7 +41,7 @@ class ConversationController extends Controller
     public function create(CreateConversationRequest $request)
     {
         $conversation = Conversation::create(['subject' => $request->subject ?? '']);
-        $conversation->participants()->attach([$request?->user()?->id]);
+        $conversation->participants()->sync([$request?->user()?->id]);
 
         return ConversationResource::make($conversation);
     }
