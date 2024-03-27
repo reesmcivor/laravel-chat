@@ -26,18 +26,21 @@ class ViewConversation extends Component
         $this->messages = $this->conversation->messages->mapWithKeys(function($message, $index) {
             return [$message->id => ['content' => $message->content]];
         })->toArray();
+        $this->emit('saved');
     }
 
     public function delete( Message $message )
     {
         $message->delete();
         $this->updateMessages();
+        $this->emit('saved');
     }
 
     public function updateMessage( Message $message )
     {
         $message->update(['content' => $this->messages[$message->id]['content']]);
         $this->updateMessages();
+        $this->emit('saved');
     }
 
     public function save()
@@ -48,6 +51,7 @@ class ViewConversation extends Component
         ]);
         $this->message = '';
         $this->updateMessages();
+        $this->emit('saved');
 
     }
 
@@ -55,7 +59,7 @@ class ViewConversation extends Component
     {
         $this->conversation->refresh();
         return view('chat::livewire.conversation.view')
-            ->layout('layouts.app', ['header' => 'Conversation']);
+            ->layout('layouts.app', ['header' => 'Conversation with : ' . $this->conversation->getParticipantNames() ]);
     }
 
 }

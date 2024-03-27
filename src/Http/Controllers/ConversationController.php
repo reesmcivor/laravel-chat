@@ -21,8 +21,10 @@ class ConversationController extends Controller
 
     public function create(Request $request)
     {
-        Conversation::create(['subject' => 'test'])->participants()->sync([$request->user()->id]);
-        return redirect(route('tenant.conversations.index'))
+        $conversation = Conversation::create(['subject' => 'test']);
+        $conversation->participants()->sync([$request->user()->id]);
+
+        return redirect(route('tenant.conversations.view', $conversation->id))
             ->with('success', __('Conversation created successfully.'));
     }
 

@@ -49,6 +49,11 @@ class Conversation extends Model implements ShouldBroadcast
         event(new CloseConversation($this));
     }
 
+    public function getParticipantNames()
+    {
+        return $this->participants()->pluck('name')->implode(', ');
+    }
+
     public function getAutoCloseMins() : int
     {
         return config('chat.conversations.close.after_minutes');

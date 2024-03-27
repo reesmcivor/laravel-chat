@@ -2,7 +2,6 @@
 
 namespace ReesMcIvor\Chat\Models;
 
-use App\Notifications\Premium\NewConversationNotification;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Database\Eloquent\BroadcastsEvents;
@@ -14,6 +13,8 @@ use App\Models\User;
 use ReesMcIvor\Chat\Events\NewChatMessage;
 use ReesMcIvor\Chat\Http\Resources\MessageResource;
 use Wildside\Userstamps\Userstamps;
+use ReesMcIvor\Chat\Notifications\NewConversationNotification;
+
 class Message extends Model implements ShouldBroadcast
 {
     use HasFactory;
@@ -24,6 +25,7 @@ class Message extends Model implements ShouldBroadcast
 
     protected $guarded = ['id'];
     protected $table = "messages";
+    
 
     protected static function boot()
     {

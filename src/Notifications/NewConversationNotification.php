@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications\Premium;
+namespace ReesMcIvor\Chat\Notifications;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
+use ReesMcIvor\Chat\Models\Message;
 
 class NewConversationNotification extends Notification implements ShouldQueue
 {
@@ -36,7 +37,7 @@ class NewConversationNotification extends Notification implements ShouldQueue
     public function toSlack()
     {
         return (new SlackMessage)
-            ->content($this->getSubject())
+            ->content($this->getSubject());
     }
 
     public function toArray($notifiable)
