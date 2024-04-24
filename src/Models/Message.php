@@ -2,6 +2,7 @@
 
 namespace ReesMcIvor\Chat\Models;
 
+use App\Models\Role;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Database\Eloquent\BroadcastsEvents;
@@ -12,6 +13,7 @@ use ReesMcIvor\Chat\Database\Factories\MessageFactory;
 use App\Models\User;
 use ReesMcIvor\Chat\Events\NewChatMessage;
 use ReesMcIvor\Chat\Http\Resources\MessageResource;
+use ReesMcIvor\Chat\Notifications\NewMessageNotification;
 use Wildside\Userstamps\Userstamps;
 use ReesMcIvor\Chat\Notifications\NewConversationNotification;
 
@@ -25,19 +27,25 @@ class Message extends Model implements ShouldBroadcast
 
     protected $guarded = ['id'];
     protected $table = "messages";
-    
 
     protected static function boot()
     {
         parent::boot();
-        
+
         static::created(function ($message) {
             $message->conversation->touch();
 
-            if($message->conversation->messages()->count() == 1) {
+            if($message->conversation->refresh()->messages()->count() == 1) {
                 User::whereIn('email',['hello@logicrises.co.uk','oli@optimal-movement.co.uk'])
                     ->get()->each(function ($admin) use ($message) {
                     $admin->notify(new NewConversationNotification($message));
+                });
+            }
+
+            if($message?->user->is_premium) {
+                $admins = $message->conversation->participants();
+                $admins->where('role_id', Role::STAFF_ROLE_ID)->each(function($staff) use ($message) {
+                    $staff->notify(new NewMessageNotification($message));
                 });
             }
         });
