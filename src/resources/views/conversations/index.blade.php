@@ -16,7 +16,7 @@
                                 <h3 class="text-xl font-semibold text-gray-900">
                                     Conversation with {{ $conversation->creator->name }}
                                 </h3>
-                                <span class="text-xs">{{ $conversation->updated_at->format('d/m/Y H:i') }}</span>
+                                <span class="text-xs">{{ $conversation->updated_at->setTimezone('Europe/London')->format('d/m/Y H:i') }}</span>
                                 @if($conversation->lastMessage)
                                     <p class="mt-3 text-base text-gray-500">
                                         {{ $conversation->lastMessage->user->name }} - {{ $conversation->lastMessage->created_at->format('d/m/Y H:i') }}
