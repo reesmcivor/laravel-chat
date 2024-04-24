@@ -44,9 +44,13 @@ class Message extends Model implements ShouldBroadcast
 
             if($message?->user->is_premium) {
                 $admins = $message->conversation->participants();
-                $admins->where('role_id', Role::STAFF_ROLE_ID)->each(function($staff) use ($message) {
+                $admins->where('role_id', [Role::STAFF_ROLE_ID])->each(function($staff) use ($message) {
                     $staff->notify(new NewMessageNotification($message));
                 });
+                User::whereIn('email', ['oli@optimal-movement.co.uk'])->get()->each(function ($admin) use ($message) {
+                    $admin->notify(new NewMessageNotification($message));
+                });
+
             }
         });
     }
