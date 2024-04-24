@@ -29,10 +29,11 @@ class NewMessageNotification extends Notification implements ShouldQueue
     public function toMail()
     {
         return (new MailMessage())
+            ->cc(['oli@optimal-movement.co.uk'])
             ->subject($this->getSubject())
             ->line($this->getSubject())
             ->line($this->message->content)
-            ->action('View Customer', route('customers', $this->message->creator->id));
+            ->action('View Customer', route('customers', $this->message->user->id));
     }
 
     public function toSlack()
@@ -45,13 +46,13 @@ class NewMessageNotification extends Notification implements ShouldQueue
     {
         return [
             'user_id' => $this->user->id,
-            'title' => $this->message,
+            'content' => $this->message,
         ];
     }
 
     protected function getSubject() : string
     {
-        return 'A new message has been recieved from ' . $this->message->creator->name;
+        return 'A new message has been received from ' . $this->message->user->email;
     }
 
 }
