@@ -21,7 +21,7 @@ class ConversationController extends Controller
             ->where('created_by', auth()->user()->id)
             ->firstOrCreate([], ['subject' => '', 'status' => 'open']);
 
-        $conversation->participants()->sync([ auth()->user()->id ]);
+        $conversation->join( Auth::user() );
         return ConversationResource::make($conversation);
     }
 
