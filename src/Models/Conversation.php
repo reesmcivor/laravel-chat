@@ -43,6 +43,7 @@ class Conversation extends Model implements ShouldBroadcast
 
         $this->messages()->create([
             'user_id' => 1,
+            'is_system_' => true,
             'content' => 'This conversation has been closed.'
         ]);
 
@@ -84,6 +85,7 @@ class Conversation extends Model implements ShouldBroadcast
     {
         $this->messages()->create([
             'user_id' => 1,
+            'is_system' => true,
             'content' => 'This conversation will be closed in 10 minutes due to inactivity.'
         ]);
     }
@@ -95,6 +97,7 @@ class Conversation extends Model implements ShouldBroadcast
 
         $this->messages()->create([
             'user_id' => $user->id,
+            'is_system' => true,
             'content' => sprintf('%s has joined the conversation.', $user->name)
         ]);
 
@@ -110,6 +113,7 @@ class Conversation extends Model implements ShouldBroadcast
 
         $this->messages()->create([
             'user_id' => $user->id,
+            'is_system' => true,
             'content' => sprintf('%s has left the conversation.', $user->name)
         ]);
 

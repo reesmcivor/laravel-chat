@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\BroadcastsEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use ReesMcIvor\Chat\Actions\NewMessage;
 use ReesMcIvor\Chat\Database\Factories\MessageFactory;
 use App\Models\User;
 use ReesMcIvor\Chat\Events\NewChatMessage;
@@ -34,24 +35,7 @@ class Message extends Model implements ShouldBroadcast
 
         static::created(function ($message) {
             $message->conversation->touch();
-
-            if($message->conversation->refresh()->messages()->count() == 1) {
-                User::whereIn('email',['hello@logicrises.co.uk','oli@optimal-movement.co.uk'])
-                    ->get()->each(function ($admin) use ($message) {
-                    $admin->notify(new NewConversationNotification($message));
-                });
-            }
-
-            if($message?->user->is_premium) {
-                $admins = $message->conversation->participants();
-                $admins->where('role_id', [Role::STAFF_ROLE_ID])->each(function($staff) use ($message) {
-                    $staff->notify(new NewMessageNotification($message));
-                });
-                User::whereIn('email', ['oli@optimal-movement.co.uk'])->get()->each(function ($admin) use ($message) {
-                    $admin->notify(new NewMessageNotification($message));
-                });
-
-            }
+            (new NewMessage)->handle($message);
         });
     }
 
