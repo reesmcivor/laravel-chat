@@ -93,13 +93,16 @@ class Conversation extends Model implements ShouldBroadcast
     public function join( User $user )
     {
         $this->participants()->syncWithoutDetaching([$user->id]);
-        $this->touch();
+        // $this->touch();
 
-        $this->messages()->create([
-            'user_id' => $user->id,
-            'is_system' => true,
-            'content' => sprintf('%s has joined the conversation.', $user->name)
-        ]);
+        $alreadyExistsAsParticipants = $this->participants()->where('user_id', $user->id)->exists();
+        if(!$alreadyExistsAsParticipants) {
+            $this->messages()->create([
+                'user_id' => $user->id,
+                'is_system' => true,
+                'content' => sprintf('%s has joined the conversation.', $user->name)
+            ]);
+        }
 
         if($this->status == "pending") {
             $this->update(['status' => 'open']);
@@ -109,7 +112,7 @@ class Conversation extends Model implements ShouldBroadcast
     public function leave( User $user )
     {
         $this->participants()->detach([$user->id]);
-        $this->touch();
+        $this->touchQuietly();
 
         $this->messages()->create([
             'user_id' => $user->id,
@@ -149,7 +152,9 @@ class Conversation extends Model implements ShouldBroadcast
 
     public function broadcastOn() : array
     {
+        // If its only the updated timestamp
         Log::info('Broadcasting to conversation ' . $this->id);
+        Log::info('Broadcasting event', ['data' => $this->getDirty()]);
         Log::debug('Participants: ' . $this->participants()->pluck('user_id'));
         return $this->participants()->pluck('user_id')->each(function($userId) {
             return new PrivateChannel('App.Models.User.' . $userId);

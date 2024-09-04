@@ -34,7 +34,7 @@ class Message extends Model implements ShouldBroadcast
         parent::boot();
 
         static::created(function ($message) {
-            $message->conversation->touch();
+            $message->conversation->touchQuietly();
             (new NewMessage)->handle($message);
         });
     }

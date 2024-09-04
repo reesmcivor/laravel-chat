@@ -43,7 +43,7 @@ class NewConversationNotification extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'user_id' => $this->user->id,
+            'user_id' => $this->message->creator->id,
             'title' => $this->message,
         ];
     }
