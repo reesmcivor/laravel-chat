@@ -8,9 +8,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
+use NotificationChannels\Expo\ExpoChannel;
+use NotificationChannels\Expo\ExpoMessage;
 use ReesMcIvor\Chat\Models\Message;
 
-class NewMessageNotification extends Notification implements ShouldQueue
+class NewCustomerMessageNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -21,37 +24,50 @@ class NewMessageNotification extends Notification implements ShouldQueue
         $this->message = $message;
     }
 
-    public function via()
+    public function via( $notifiable ) : array
     {
-        return ['database', 'slack', 'mail'];
+        $channels = ['database', 'slack' /*'mail'*/];
+        $expoTokens = $notifiable->routeNotificationForExpo($this);
+        if(count($expoTokens)) {
+            $channels[] = ExpoChannel::class;
+        }
+        Log::debug('Channels: ' . json_encode($channels));
+        return $channels;
     }
 
     public function toMail()
     {
         return (new MailMessage())
             ->subject($this->getSubject())
-            ->line($this->getSubject())
-            ->line($this->message->content)
-            ->action('View Conversation', route('tenant.conversations.view', $this->message->conversation->id));
+            ->line("A new message has been left for customer")
+            ->action('View Customer', route('customers', $this->message->creator->id));
     }
 
     public function toSlack()
     {
         return (new SlackMessage)
-            ->content($this->getSubject());
+            ->content(__CLASS__ . ': ' . date('r') . ' :: ' .  $this->getSubject());
+    }
+
+    public function toExpo()
+    {
+        return ExpoMessage::create()
+            ->title("New Message")
+            ->body("You have been left a new message.")
+            ->badge(1);
     }
 
     public function toArray($notifiable)
     {
         return [
             'user_id' => $this->message->creator->id,
-            'content' => $this->message,
+            'title' => $this->message,
         ];
     }
 
     protected function getSubject() : string
     {
-        return 'A new message has been received from ' . $this->message->user->email;
+        return 'A new message has been left by ' . $this->message->creator->name;
     }
 
 }
