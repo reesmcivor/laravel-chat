@@ -13,7 +13,7 @@ use NotificationChannels\Expo\ExpoChannel;
 use NotificationChannels\Expo\ExpoMessage;
 use ReesMcIvor\Chat\Models\Message;
 
-class NewCustomerMessageNotification extends Notification implements ShouldQueue
+class NewMessageNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
