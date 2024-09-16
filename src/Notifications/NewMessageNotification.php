@@ -26,7 +26,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
 
     public function via( $notifiable ) : array
     {
-        $channels = ['database', 'slack' /*'mail'*/];
+        $channels = ['database', 'slack', 'mail'];
         $expoTokens = $notifiable->routeNotificationForExpo($this);
         if(count($expoTokens)) {
             $channels[] = ExpoChannel::class;
