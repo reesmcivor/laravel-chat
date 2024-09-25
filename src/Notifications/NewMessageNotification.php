@@ -26,7 +26,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
 
     public function via( $notifiable ) : array
     {
-        $channels = ['database', 'slack', 'mail'];
+        $channels = ['database', 'slack' /*'mail'*/];
         $expoTokens = $notifiable->routeNotificationForExpo($this);
         if(count($expoTokens)) {
             $channels[] = ExpoChannel::class;
@@ -40,7 +40,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
         return (new MailMessage())
             ->subject($this->getSubject())
             ->line("A new message has been left for customer")
-            ->action('View Conversation', route('tenant.conversations.view', $this?->message?->conversation?->id));
+            ->action('View Customer', route('customers', $this->message->creator->id));
     }
 
     public function toSlack()
@@ -60,14 +60,14 @@ class NewMessageNotification extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'user_id' => $this?->message?->creator?->id,
+            'user_id' => $this->message->creator->id,
             'title' => $this->message,
         ];
     }
 
     protected function getSubject() : string
     {
-        return 'A new message has been left by ' . $this?->message?->creator?->name;
+        return 'A new message has been left by ' . $this->message->creator->name;
     }
 
 }

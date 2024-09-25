@@ -37,8 +37,7 @@ class NewCustomerMessageNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage())
             ->subject($this->getSubject())
-            ->line("A new message has been left for customer")
-            ->action('View Customer', route('customers', $this->message->creator->id));
+            ->line("A new message has been sent to you on the Optimal Movement App.");
     }
 
     public function toSlack()
@@ -50,8 +49,8 @@ class NewCustomerMessageNotification extends Notification implements ShouldQueue
     public function toExpo()
     {
         return ExpoMessage::create()
-            ->title("New Message")
-            ->body("You have been left a new message.")
+            ->title("You have a New Message")
+            ->body("A new message has been sent to you on the Optimal Movement App.")
             ->badge(1);
     }
 
@@ -65,7 +64,7 @@ class NewCustomerMessageNotification extends Notification implements ShouldQueue
 
     protected function getSubject() : string
     {
-        return 'A new message has been left by ' . $this->message->creator->name;
+        return 'A new message has been left for you by Optimal Movement';
     }
 
 }
