@@ -61,7 +61,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
     {
         return [
             'user_id' => $this->message->creator->id,
-            'title' => $this->message,
+            'title' => "A new message has been left for you.",
         ];
     }
 

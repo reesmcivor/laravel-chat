@@ -58,7 +58,7 @@ class NewCustomerMessageNotification extends Notification implements ShouldQueue
     {
         return [
             'user_id' => $this->user->id,
-            'title' => $this->message,
+            'title' => "A new message has been left for you by Optimal Movement.",
         ];
     }
 

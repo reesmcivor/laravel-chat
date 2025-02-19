@@ -49,7 +49,7 @@
                                             $words = explode(" ", $participant->name);
                                             $initials = null;
                                             foreach ($words as $w) {
-                                                $initials .= $w[0];
+                                                $initials .= $w[0] ?? '';
                                             }
                                             echo $initials;
                                             ?>

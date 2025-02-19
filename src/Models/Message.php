@@ -36,6 +36,15 @@ class Message extends Model implements ShouldBroadcast
         static::created(function ($message) {
             $message->conversation->touchQuietly();
             (new NewMessage)->handle($message);
+
+            /** \App\Models\User $user */
+            if(!$message->user->isAdmin() && !$message->user->is_premium) {
+                $message->conversation->messages()->createQuietly([
+                    'user_id' => 1,
+                    'is_system_' => true,
+                    'content' => 'Messaging a therapist is a premium feature reserved for Optimal Movers. To become an Optimal Mover please upgrade your membership.'
+                ]);
+            }
         });
     }
 
