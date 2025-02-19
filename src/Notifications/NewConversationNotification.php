@@ -44,7 +44,7 @@ class NewConversationNotification extends Notification implements ShouldQueue
     {
         return [
             'user_id' => $this->message->creator->id,
-            'title' => "A new conversation has been started with a therapist.",
+            'message' => "A new conversation has been started with a therapist.",
         ];
     }
 
