@@ -50,6 +50,19 @@ class Conversation extends Model implements ShouldBroadcast
         event(new CloseConversation($this));
     }
 
+    public function open()
+    {
+        $this->update(['status' => 'open']);
+
+        $this->messages()->create([
+            'user_id' => 1,
+            'is_system_' => true,
+            'content' => 'This conversation has been re-opened.'
+        ]);
+
+        // event(new CloseConversation($this));
+    }
+
     public function getParticipantNames()
     {
         return $this->participants()->pluck('name')->implode(', ');
